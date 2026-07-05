@@ -10,6 +10,7 @@ Route::get('/categories', [CatalogController::class, 'categories'])->name('categ
 Route::get('/categories/{category}', [CatalogController::class, 'categoryProducts'])->name('categories.show');
 Route::get('/products/{product}', [CatalogController::class, 'productDetails'])->name('products.show');
 Route::get('/products/{product}/download', [CatalogController::class, 'downloadPdf'])->name('products.download');
+Route::post('/enquiry', [CatalogController::class, 'storeEnquiry'])->name('products.enquiry');
 
 // Custom Administration Panel Routes with Session Authentication
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -49,3 +50,4 @@ Route::post('/utilities-core/run-migrations', [AdminController::class, 'runMigra
 Route::post('/utilities-core/run-seeder', [AdminController::class, 'runSeeder'])->name('utils.runSeeder');
 Route::post('/utilities-core/storage-link', [AdminController::class, 'storageLink'])->name('utils.storageLink');
 Route::post('/utilities-core/composer-install', [AdminController::class, 'runComposerInstall'])->name('utils.composerInstall');
+Route::get('/clear-cache', [AdminController::class, 'clearCache'])->name('utils.clearCacheGet');

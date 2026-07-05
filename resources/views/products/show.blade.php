@@ -88,33 +88,61 @@
 <div id="seller-info-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Seller Information</h3>
+            <h3 id="modal-title">Request Seller Info</h3>
             <button class="close-modal-btn" onclick="closeSellerModal()">&times;</button>
         </div>
-        <div class="modal-body">
-            <div class="info-row">
-                <span class="info-label">Name</span>
-                <span class="info-value">{{ $product['manufacturer'] ?? 'Bharat Textile Exporters' }}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Email</span>
-                <span class="info-value">sales@bharattex2026.com</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Phone</span>
-                <span class="info-value">
-                    <a href="tel:{{ $product['mobile'] ?? '+919999999999' }}" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
-                        {{ $product['mobile'] ?? '+91 99999 99999' }}
-                    </a>
-                </span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Address</span>
-                <span class="info-value">{{ $product['address'] ?? 'Bharat Tex Pavilion, Pragati Maidan, New Delhi' }}</span>
-            </div>
+        
+        <!-- Step 1: Lead Capture Form -->
+        <div id="seller-lead-form-block">
+            <form id="seller-lead-form" onsubmit="submitEnquiry(event)">
+                <div class="modal-body" style="gap: 16px;">
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0 0 10px 0; text-align: left;">Please enter your details to view the manufacturer's contact details.</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 6px; text-align: left;">
+                        <label for="lead-name" style="font-size: 0.85rem; font-weight: 600; color: var(--text-dark);">Your Name</label>
+                        <input type="text" id="lead-name" required placeholder="Enter your full name" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-family: inherit; font-size: 0.95rem; background-color: var(--canvas-bg); color: var(--text-dark);">
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 6px; text-align: left;">
+                        <label for="lead-mobile" style="font-size: 0.85rem; font-weight: 600; color: var(--text-dark);">Mobile Number</label>
+                        <input type="tel" id="lead-mobile" required placeholder="Enter 10-digit mobile" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-family: inherit; font-size: 0.95rem; background-color: var(--canvas-bg); color: var(--text-dark);">
+                    </div>
+                    
+                    <div id="lead-error-msg" style="display: none; color: #DC2626; font-size: 0.85rem; font-weight: 500; text-align: left;"></div>
+                </div>
+                <div class="modal-footer" style="padding-top: 10px;">
+                    <button type="submit" class="primary-btn-exact" id="lead-submit-btn" style="border: none; width: 100%;">View Seller Details</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-footer">
-            <button class="primary-btn-exact" onclick="closeSellerModal()" style="border: none;">Close</button>
+        
+        <!-- Step 2: Seller Details (Initially Hidden) -->
+        <div id="seller-details-block" style="display: none;">
+            <div class="modal-body">
+                <div class="info-row">
+                    <span class="info-label">Name</span>
+                    <span class="info-value">{{ $product['manufacturer'] ?? 'Bharat Textile Exporters' }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email</span>
+                    <span class="info-value">sales@bharattex2026.com</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone</span>
+                    <span class="info-value">
+                        <a href="tel:{{ $product['mobile'] ?? '+919999999999' }}" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+                            {{ $product['mobile'] ?? '+91 99999 99999' }}
+                        </a>
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Address</span>
+                    <span class="info-value">{{ $product['address'] ?? 'Bharat Tex Pavilion, Pragati Maidan, New Delhi' }}</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="primary-btn-exact" onclick="closeSellerModal()" style="border: none; width: 100%;">Close</button>
+            </div>
         </div>
     </div>
 </div>
@@ -145,23 +173,88 @@
             });
         });
 
-        // Seller modal toggle
+        // Seller modal toggle and AJAX lead capture
         const sellerModal = document.getElementById('seller-info-modal');
-        
+        const leadFormBlock = document.getElementById('seller-lead-form-block');
+        const detailsBlock = document.getElementById('seller-details-block');
+        const modalTitle = document.getElementById('modal-title');
+        const errorMsg = document.getElementById('lead-error-msg');
+        const submitBtn = document.getElementById('lead-submit-btn');
+
         window.openSellerModal = function() {
+            // Check if user has already submitted the details in this session
+            if (localStorage.getItem('seller_lead_submitted') === 'true') {
+                modalTitle.textContent = 'Seller Information';
+                leadFormBlock.style.display = 'none';
+                detailsBlock.style.display = 'block';
+            } else {
+                modalTitle.textContent = 'Request Seller Info';
+                leadFormBlock.style.display = 'block';
+                detailsBlock.style.display = 'none';
+            }
             sellerModal.style.display = 'flex';
         };
 
         window.closeSellerModal = function() {
             sellerModal.style.display = 'none';
         };
-        
+
         // Close modal when clicking outside content area
         sellerModal.addEventListener('click', function(e) {
             if (e.target === sellerModal) {
                 closeSellerModal();
             }
         });
+
+        // Submit Lead Enquiry via AJAX
+        window.submitEnquiry = function(event) {
+            event.preventDefault();
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            errorMsg.style.display = 'none';
+
+            const name = document.getElementById('lead-name').value;
+            const mobile = document.getElementById('lead-mobile').value;
+            const productSlug = "{{ $product['slug'] }}";
+
+            fetch("{{ route('products.enquiry') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    name: name,
+                    mobile: mobile,
+                    product_slug: productSlug
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Store submission status in localStorage
+                    localStorage.setItem('seller_lead_submitted', 'true');
+                    
+                    // Toggle views smoothly
+                    modalTitle.textContent = 'Seller Information';
+                    leadFormBlock.style.display = 'none';
+                    detailsBlock.style.display = 'block';
+                } else {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'View Seller Details';
+                    errorMsg.textContent = data.error || 'Submission failed. Please try again.';
+                    errorMsg.style.display = 'block';
+                }
+            })
+            .catch(err => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'View Seller Details';
+                errorMsg.textContent = 'Network error. Please try again.';
+                errorMsg.style.display = 'block';
+                console.error(err);
+            });
+        };
     });
 </script>
 @endsection

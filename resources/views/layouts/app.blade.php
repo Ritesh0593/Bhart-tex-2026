@@ -11,7 +11,7 @@
     <meta name="robots" content="index, follow">
     
     <!-- Custom Premium Stylesheet -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
 </head>
 <body>
 

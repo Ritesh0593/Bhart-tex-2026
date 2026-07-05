@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\EnquiryUser;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
@@ -98,5 +99,44 @@ class CatalogController extends Controller
         $pdf = Pdf::loadView('products.pdf', compact('product'));
         
         return $pdf->download($product->slug . '-specification-sheet.pdf');
+    }
+
+    /**
+     * Store a seller enquiry and record lead.
+     */
+    public function storeEnquiry(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'mobile' => 'required|string|max:20',
+                'product_slug' => 'nullable|string'
+            ]);
+
+            // Find product ID by slug if provided
+            $productId = null;
+            if (!empty($validated['product_slug'])) {
+                $product = Product::where('slug', $validated['product_slug'])->first();
+                if ($product) {
+                    $productId = $product->id;
+                }
+            }
+
+            EnquiryUser::create([
+                'name' => $validated['name'],
+                'mobile' => $validated['mobile'],
+                'product_id' => $productId
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Enquiry recorded successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 422);
+        }
     }
 }
