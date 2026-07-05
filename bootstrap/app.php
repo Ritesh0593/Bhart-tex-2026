@@ -4,6 +4,15 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
+// Define custom temporary directory to avoid tempnam() warnings on shared hosting
+$tempDir = __DIR__ . '/../storage/app/temp';
+if (!file_exists($tempDir)) {
+    @mkdir($tempDir, 0755, true);
+}
+putenv('TMPDIR=' . $tempDir);
+putenv('TEMP=' . $tempDir);
+putenv('TMP=' . $tempDir);
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
