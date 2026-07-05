@@ -40,6 +40,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/products/{id}', [AdminController::class, 'destroyProduct'])->name('products.destroy');
         Route::delete('/product-images/{id}', [AdminController::class, 'deleteProductImage'])->name('product-images.destroy');
 
+        // Enquiries list & deletion
+        Route::get('/enquiries', [AdminController::class, 'enquiries'])->name('enquiries.index');
+        Route::delete('/enquiries/{id}', [AdminController::class, 'destroyEnquiry'])->name('enquiries.destroy');
     });
 });
 

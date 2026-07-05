@@ -21,6 +21,12 @@
         <div class="metric-label">Total Products</div>
         <a href="{{ route('admin.products.index') }}" class="metric-link">Manage Products &rarr;</a>
     </div>
+
+    <div class="metric-card">
+        <div class="metric-value">{{ $enquiriesCount }}</div>
+        <div class="metric-label">Seller Enquiries</div>
+        <a href="{{ route('admin.enquiries.index') }}" class="metric-link">View Enquiries &rarr;</a>
+    </div>
 </div>
 
 <!-- Quick Actions Section -->
@@ -29,6 +35,7 @@
     <div class="actions-buttons">
         <a href="{{ route('admin.categories.create') }}" class="admin-btn primary">Add New Category</a>
         <a href="{{ route('admin.products.create') }}" class="admin-btn primary">Add New Product</a>
+        <a href="{{ route('admin.enquiries.index') }}" class="admin-btn secondary">Manage Enquiries</a>
         <a href="{{ route('welcome') }}" target="_blank" class="admin-btn secondary">Open Live Catalog</a>
     </div>
 </div>

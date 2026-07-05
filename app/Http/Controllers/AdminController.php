@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\EnquiryUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
@@ -19,7 +20,8 @@ class AdminController extends Controller
     {
         $categoriesCount = Category::count();
         $productsCount = Product::count();
-        return view('admin.dashboard', compact('categoriesCount', 'productsCount'));
+        $enquiriesCount = EnquiryUser::count();
+        return view('admin.dashboard', compact('categoriesCount', 'productsCount', 'enquiriesCount'));
     }
 
     /**
@@ -568,6 +570,29 @@ class AdminController extends Controller
             }
         } catch (\Exception $e) {
             return redirect()->route('utils.dashboard')->with('error', 'Composer installation crashed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Enquiries CRUD: List all
+     */
+    public function enquiries()
+    {
+        $enquiries = EnquiryUser::with('product')->orderBy('created_at', 'desc')->get();
+        return view('admin.enquiries.index', compact('enquiries'));
+    }
+
+    /**
+     * Enquiries CRUD: Delete
+     */
+    public function destroyEnquiry($id)
+    {
+        try {
+            $enquiry = EnquiryUser::findOrFail($id);
+            $enquiry->delete();
+            return redirect()->route('admin.enquiries.index')->with('success', 'Enquiry deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.enquiries.index')->with('error', 'Failed to delete enquiry.');
         }
     }
 }
