@@ -67,14 +67,45 @@ body {
 @media (max-width: 480px) {
     body {
         background-color: var(--canvas-bg);
+        overflow-y: auto;
+        display: block;
+        min-height: 100dvh;
     }
     .mobile-container {
         max-width: 100%;
-        height: 100vh;
-        max-height: 100vh;
+        height: 100dvh;
+        min-height: 100dvh;
+        max-height: none;
         border: none;
         border-radius: 0;
         box-shadow: none;
+    }
+    .splash-wrapper {
+        padding: 16px 20px;
+    }
+    .splash-hero {
+        margin-top: 20px;
+    }
+    .splash-logo {
+        width: 190px;
+        margin-bottom: 20px;
+    }
+    .splash-title-exact {
+        font-size: 1.4rem;
+    }
+    .splash-subtitle-exact {
+        font-size: 1rem;
+    }
+    .primary-btn-exact {
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+    .sticky-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 120;
     }
 }
 
@@ -135,7 +166,7 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 48px 24px;
+    padding: 24px 20px;
     text-align: center;
 }
 
@@ -398,7 +429,7 @@ body {
 }
 
 .details-content {
-    padding: 24px 16px 80px 16px;
+    padding: 24px 16px 150px 16px;
     background-color: var(--canvas-bg);
 }
 
@@ -464,6 +495,7 @@ body {
     border-top: 1px solid var(--border-color);
     padding: 12px 16px;
     z-index: 90;
+    margin-top: auto;
 }
 
 /* Animations */
@@ -1087,4 +1119,108 @@ body.admin-login-body {
         transform: translateY(0);
         opacity: 1;
     }
+}
+
+/* Modal overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Slide up from bottom on mobile */
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* Modal Content Card */
+.modal-content {
+    background-color: var(--canvas-bg);
+    width: 100%;
+    max-width: 440px; /* fit inside the mobile view mockup */
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.15);
+    animation: slideUpSheet 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (min-width: 480px) {
+    .modal-overlay {
+        align-items: center; /* Center modal on desktop */
+    }
+    .modal-content {
+        border-radius: 20px;
+        width: 90%;
+    }
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+/* Modal Body */
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.info-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    padding-bottom: 10px;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.info-value {
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+/* Keyframes for sliding bottom sheet */
+@keyframes slideUpSheet {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
 }

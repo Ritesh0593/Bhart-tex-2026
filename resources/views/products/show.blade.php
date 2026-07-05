@@ -79,8 +79,44 @@
 </main>
 
 <!-- Sticky Footer for Call to Action -->
-<div class="sticky-footer">
+<div class="sticky-footer" style="display: flex; flex-direction: column; gap: 8px;">
     <a href="{{ route('products.download', $product['slug']) }}" class="primary-btn-exact" id="download-btn" style="text-decoration: none;">Download</a>
+    <button type="button" class="primary-btn-exact" id="seller-info-btn" onclick="openSellerModal()" style="background-color: transparent; color: var(--text-dark); border: 1px solid var(--border-color); box-shadow: none;">Seller Information</button>
+</div>
+
+<!-- Seller Info Modal -->
+<div id="seller-info-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Seller Information</h3>
+            <button class="close-modal-btn" onclick="closeSellerModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="info-row">
+                <span class="info-label">Name</span>
+                <span class="info-value">{{ $product['manufacturer'] ?? 'Bharat Textile Exporters' }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value">sales@bharattex2026.com</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Phone</span>
+                <span class="info-value">
+                    <a href="tel:{{ $product['mobile'] ?? '+919999999999' }}" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+                        {{ $product['mobile'] ?? '+91 99999 99999' }}
+                    </a>
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Address</span>
+                <span class="info-value">{{ $product['address'] ?? 'Bharat Tex Pavilion, Pragati Maidan, New Delhi' }}</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="primary-btn-exact" onclick="closeSellerModal()" style="border: none;">Close</button>
+        </div>
+    </div>
 </div>
 
 <!-- Custom JavaScript Switcher -->
@@ -107,6 +143,24 @@
                     mainImage.style.opacity = 1;
                 }, 150);
             });
+        });
+
+        // Seller modal toggle
+        const sellerModal = document.getElementById('seller-info-modal');
+        
+        window.openSellerModal = function() {
+            sellerModal.style.display = 'flex';
+        };
+
+        window.closeSellerModal = function() {
+            sellerModal.style.display = 'none';
+        };
+        
+        // Close modal when clicking outside content area
+        sellerModal.addEventListener('click', function(e) {
+            if (e.target === sellerModal) {
+                closeSellerModal();
+            }
         });
     });
 </script>
