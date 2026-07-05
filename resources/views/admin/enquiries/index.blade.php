@@ -44,14 +44,9 @@
                         @else
                             <span style="color: var(--text-muted); font-style: italic;">General Interest / Product Deleted</span>
                         @endif
-                    </td>
                     <td>
                         <div class="table-actions" style="justify-content: center;">
-                            <form action="{{ route('admin.enquiries.destroy', $enquiry->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this enquiry lead?');" style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="admin-btn delete">Delete</button>
-                            </form>
+                            <a href="{{ route('admin.enquiries.destroyGet', $enquiry->id) }}" class="admin-btn delete" onclick="return confirm('Are you sure you want to delete this enquiry lead?');" style="text-decoration: none;">Delete</a>
                         </div>
                     </td>
                 </tr>

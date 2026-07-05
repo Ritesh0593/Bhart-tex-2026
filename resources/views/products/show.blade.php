@@ -181,9 +181,11 @@
         const errorMsg = document.getElementById('lead-error-msg');
         const submitBtn = document.getElementById('lead-submit-btn');
 
+        const productSlug = "{{ $product['slug'] }}";
+
         window.openSellerModal = function() {
-            // Check if user has already submitted the details in this session
-            if (localStorage.getItem('seller_lead_submitted') === 'true') {
+            // Check if user has already submitted the details in this session for this specific product
+            if (localStorage.getItem('seller_lead_submitted_' + productSlug) === 'true') {
                 modalTitle.textContent = 'Seller Information';
                 leadFormBlock.style.display = 'none';
                 detailsBlock.style.display = 'block';
@@ -233,8 +235,8 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Store submission status in localStorage
-                    localStorage.setItem('seller_lead_submitted', 'true');
+                    // Store submission status in localStorage for this specific product
+                    localStorage.setItem('seller_lead_submitted_' + productSlug, 'true');
                     
                     // Toggle views smoothly
                     modalTitle.textContent = 'Seller Information';

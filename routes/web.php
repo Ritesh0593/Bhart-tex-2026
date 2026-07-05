@@ -43,6 +43,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Enquiries list & deletion
         Route::get('/enquiries', [AdminController::class, 'enquiries'])->name('enquiries.index');
         Route::delete('/enquiries/{id}', [AdminController::class, 'destroyEnquiry'])->name('enquiries.destroy');
+        Route::get('/enquiries/{id}/delete', [AdminController::class, 'destroyEnquiry'])->name('enquiries.destroyGet');
     });
 });
 
